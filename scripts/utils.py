@@ -3,15 +3,15 @@ from web3.middleware import construct_sign_and_send_raw_middleware
 from eth_account.signers.local import LocalAccount
 from eth_account import Account
 from sapphirepy import sapphire
-from config import OASIS_RPC_URL, PRIVATE_KEY
+from scripts.config import PRIVATE_KEY, networks
 import json
 from pathlib import Path
 
 
-def setup_web3_middleware():
+def setup_web3_middleware(network_name: str):
     account: LocalAccount = Account.from_key(
         PRIVATE_KEY)
-    w3 = Web3(Web3.HTTPProvider(OASIS_RPC_URL))
+    w3 = Web3(Web3.HTTPProvider(networks[network_name]))
     w3.middleware_onion.add(construct_sign_and_send_raw_middleware(account))
     w3 = sapphire.wrap(w3)
     # w3.eth.set_gas_price_strategy(rpc_gas_price_strategy)

@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      sapphire-localnet-ci:
+        image: ghcr.io/oasisprotocol/sapphire-localnet:latest
+        ports:
+          - 8545:8545
+          - 8546:8546
+        env:
+          OASIS_DEPOSIT: /oasis-deposit -test-mnemonic -n 5
+        options: >-
+          --rm
+          --health-cmd="/oasis-node debug control wait-ready -a unix:/serverdir/node/net-runner/network/client-0/internal.sock"
+          --health-start-period=90s
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Clone external repository
+      run: git clone https://github.com/oasisprotocol/sapphire-paratime.git
+
+    - name: Build sapphirepy .whl file
+      run: |
+        cd /sapphire-paratime/clients/py
+        pip3 install --user -r requirements.txt
+        pip3 install --user -r requirements.dev.txt
+        make
+        mv dist/sapphirepy-0.1.0-py3-none-any.whl ../../../sapphirepy-0.1.0-py3-none-any.whl
+        cd ../../../
+        pip3 install --user sapphirepy-0.1.0-py3-none-any.whl
+        pip3 install --user -r requirements.txt
+
+    - name: Lint code
+      run: |
+        pip install flake8
+        flake8 scripts/
+        flake main.py
+        flake cli_app.py
+
+    - name: Run tests
+      run: |
+        pytest tests/

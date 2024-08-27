@@ -7,8 +7,6 @@ This is a skeleton for confidential Oasis dApps in Python.
 This project was tested on python 3.10, but should work with most python3 versions. 
 Use pyenv to handle multiple python installations.
 
-##### Steps:
-
 1. Create the environment using venv (or pipx) ```python3 -m venv my_env``` and install the python sapphire wrapper. The library is currently **NOT** included in the PyPI repository so make sure to only install the local .whl version.
 
 2. Make sure to follow the [instructions](https://github.com/oasisprotocol/sapphire-paratime/tree/main/clients/py "Py client wrapper") and build the .whl file correctly. Install the wheel.
@@ -16,8 +14,6 @@ Use pyenv to handle multiple python installations.
 3. Install the packages in requirements.txt ```pip install -r requirements.txt```
 
 ## Setup
-
-##### Steps:
 
 1. Include the RPC url in the **scripts/config.py**. If running sapphire-localnet make sure to launch the [local node](https://github.com/oasisprotocol/oasis-web3-gateway/tree/main/docker).
 2. Add your deployer private key to the environment variables ```export PRIVATE_KEY=<my_private_key>```.

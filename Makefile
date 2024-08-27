@@ -1,8 +1,6 @@
 # Define the Python interpreter
 PYTHON=python3
 
-
-
 # Install dependencies
 install:
 	$(PYTHON) -m pip install -r requirements.txt

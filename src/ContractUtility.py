@@ -2,22 +2,31 @@ from pathlib import Path
 from solcx import compile_standard, install_solc
 from eth_account.signers.local import LocalAccount
 from eth_account import Account
-from scripts.config import PRIVATE_KEY, SOLIDITY_VERSION
-from scripts.utils import setup_web3_middleware, get_contract, process_json_file
+
+from src.utils import setup_web3_middleware, get_contract, process_json_file
 
 
 class ContractUtility:
     """
     Initializes the ContractUtility class.
 
-    :param None:
+    :param network_name: Name of the network to connect to
+    :type network_name: str
     :return: None
     """
-    def __init__(self, network_name: str):
-        self.w3 = setup_web3_middleware(network_name)
-        self.account: LocalAccount = Account.from_key(PRIVATE_KEY)
 
-    def setup_and_compile_contract(self, contract_name: str = "MessageBox") -> str:
+    def __init__(self, network_name: str):
+        PRIVATE_KEY = os.environ.get('PRIVATE_KEY')
+
+        networks = {
+            "sapphire": "https://sapphire.oasis.io",
+            "sapphire-testnet": "https://testnet.sapphire.oasis.io",
+            "sapphire-localnet": "http://localhost:8545",
+        }
+        self.w3 = setup_web3_middleware(networks.get(network_name), PRIVATE_KEY)
+
+    @classmethod
+    def setup_and_compile_contract(cls, contract_name: str = "MessageBox", SOLIDITY_VERSION: str = "0.8.0") -> str:
         install_solc(SOLIDITY_VERSION)
         contract_dir = (Path(__file__).parent.parent / "contracts").resolve()
         contract_dir.mkdir(parents=True, exist_ok=True)

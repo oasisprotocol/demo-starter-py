@@ -4,13 +4,13 @@ import os
 if os.environ.get('PRIVATE_KEY') is None:
     os.environ['PRIVATE_KEY'] = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d'
 
-from main import set_message, get_message
-from scripts.ContractUtility import ContractUtility
+from src.MessageBox import set_message, get_message
+from src.ContractUtility import ContractUtility
 from unittest.mock import MagicMock, patch
 
 
-@patch('scripts.ContractUtility.Account.from_key', return_value='0xABCD')
-@patch('scripts.ContractUtility.setup_web3_middleware', return_value={})
+@patch('src.ContractUtility.Account.from_key', return_value='0xABCD')
+@patch('src.ContractUtility.setup_web3_middleware', return_value={})
 def test_contract_utility_init(mock_middleware, mock_account):
     util = ContractUtility('sapphire-localnet')
 
@@ -18,15 +18,12 @@ def test_contract_utility_init(mock_middleware, mock_account):
     mock_account.assert_called_once()
     assert isinstance(util, ContractUtility)
     assert util.w3 == mock_middleware.return_value
-    assert util.account == '0xABCD'
 
-
-@patch('scripts.ContractUtility.compile_standard', return_value='compiled_sol')
-@patch('scripts.ContractUtility.install_solc')
+@patch('src.ContractUtility.compile_standard', return_value='compiled_sol')
+@patch('src.ContractUtility.install_solc')
 @patch('builtins.open', new_callable=MagicMock)
-@patch('scripts.ContractUtility.Account.from_key', return_value='0xABCD')
-@patch('scripts.ContractUtility.setup_web3_middleware', return_value={})
-def test_setup_and_compile_contract(mock_middleware, mock_account, mock_open, mock_install_solc, mock_compile_standard):
+@patch('src.ContractUtility.setup_web3_middleware', return_value={})
+def test_setup_and_compile_contract(mock_middleware, mock_open, mock_install_solc, mock_compile_standard):
     util = ContractUtility('sapphire-localnet')
     contract_name = 'MessageBox'
 
@@ -38,9 +35,9 @@ def test_setup_and_compile_contract(mock_middleware, mock_account, mock_open, mo
     assert output == 'compiled_sol'
 
 
-@patch('scripts.ContractUtility.get_contract', return_value=('abi', 'bytecode'))
-@patch('scripts.ContractUtility.Account.from_key', return_value='0xABCD')
-@patch('scripts.ContractUtility.setup_web3_middleware', return_value={})
+@patch('src.ContractUtility.get_contract', return_value=('abi', 'bytecode'))
+@patch('src.ContractUtility.Account.from_key', return_value='0xABCD')
+@patch('src.ContractUtility.setup_web3_middleware', return_value={})
 def test_deploy_contract(mock_middleware, mock_account, mock_get_contract):
     mock_eth = MagicMock()
     mock_eth.return_value = {'gasPrice': 'gas_price'}

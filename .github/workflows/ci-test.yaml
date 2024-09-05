@@ -35,21 +35,29 @@ jobs:
     - name: Clone external repository
       run: git clone https://github.com/oasisprotocol/sapphire-paratime.git
 
+    - name: Checkout tools repo
+      uses: actions/checkout@v4
+      with:
+        repository: https://github.com/oasisprotocol/sapphire-paratime.git
+        path: /wrapper/
+
     - name: Build sapphirepy .whl file
       run: |
-        cd /sapphire-paratime/clients/py
         pip3 install --user -r requirements.txt
         pip3 install --user -r requirements.dev.txt
         make
-        mv dist/sapphirepy-0.1.0-py3-none-any.whl ../../../sapphirepy-0.1.0-py3-none-any.whl
-        cd ../../../
+        mv dist/sapphirepy-0.1.0-py3-none-any.whl ../../../../sapphirepy-0.1.0-py3-none-any.whl
+      working-directory: /wrapper/sapphire-paratime/clients/py
+
+    - name: Install sapphirepy .whl file
+      run: |
         pip3 install --user sapphirepy-0.1.0-py3-none-any.whl
         pip3 install --user -r requirements.txt
 
     - name: Lint code
       run: |
         pip install flake8
-        flake8 scripts/
+        flake scripts/
         flake main.py
         flake cli_app.py
 

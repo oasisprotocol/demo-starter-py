@@ -1,59 +1,65 @@
-from typing import Optional
-from scripts.ContractUtility import ContractUtility
-from scripts.utils import get_contract
+#!/usr/bin/env python3
+
+from src.ContractUtility import ContractUtility
+from src.MessageBox import set_message, get_message
+import argparse
+
+def main():
+    """
+    Main method for the Python CLI tool.
+
+    :return: None
+    """
+    parser = argparse.ArgumentParser(description="A Python CLI tool for compiling, deploying, and interacting with smart contracts.")
+
+    subparsers = parser.add_subparsers(dest="command", help="Subcommands")
+
+    # Subparser for compile
+    compile_parser = subparsers.add_parser('compile', help="Compile the source code")
+    compile_parser.add_argument('--contract', help="Name of the contract to compile", default='MessageBox')
 
 
-def compile_contract(contract_name: str,
-                     network_name: Optional[str] = "sapphire-localnet"
-                     ) -> None:
-    contract_utility = ContractUtility(network_name)
-    contract_utility.setup_and_compile_contract(contract_name)
+    # Subparser for deploy
+    deploy_parser = subparsers.add_parser('deploy', help="Deploy the smart contract")
+    deploy_parser.add_argument('--contract', help="Name of the contract to deploy", required=True)
+    deploy_parser.add_argument('--network', help="Chain name to connect to "
+                                               "(sapphire, sapphire-testnet, sapphire-localnet)", required=True)
 
-def deploy_contract(contract_name: str,
-                    network_name: Optional[str] = "sapphire-localnet"
-                    ) -> str:
-    contract_utility = ContractUtility(network_name)
-    contract_address = contract_utility.deploy_contract(contract_name)
-    return contract_address
+    # Subparser for set message
+    set_message_parser = subparsers.add_parser('setMessage', help="Interact with a deployed contract")
+    set_message_parser.add_argument('--name', help="Contract name to interact with", required=True)
+    set_message_parser.add_argument('--address', help="Contract address to call", required=True)
+    set_message_parser.add_argument('--message', help="Message to store in the contract", required=True)
+    set_message_parser.add_argument('--network', help="Chain name to connect to "
+                                               "(sapphire, sapphire-testnet, sapphire-localnet)", required=True)
 
-def set_message(contract_name: str,
-                address: str,
-                message:str,
-                network_name: Optional[str] = "sapphire-localnet"
-                ) -> None:
-    contract_utility = ContractUtility(network_name)
+    # Subparser for get message
+    get_message_parser = subparsers.add_parser('message', help="Interact with a deployed contract")
+    get_message_parser.add_argument('--name', help="Contract name to interact with", required=True)
+    get_message_parser.add_argument('--address', help="Contract address to call", required=True)
+    get_message_parser.add_argument('--network', help="Chain name to connect to "
+                                               "(sapphire, sapphire-testnet, sapphire-localnet)", required=True)
 
-    abi, bytecode = get_contract(contract_name)
+    arguments = parser.parse_args()
 
-    contract = contract_utility.w3.eth.contract(address=address, abi=abi)
 
-    # Set a message
-    tx_hash = contract.functions.setMessage(message).transact({'gasPrice': contract_utility.w3.eth.gas_price})
-    tx_receipt = contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(f"Message set. Transaction hash: {tx_receipt.transactionHash.hex()}")
+    if arguments.command == "compile":
+        # Use class method which does not require an instance of ContractUtility.
+        # This is to avoid setting up the Web3 instance which requires the PRIVATE_KEY.
+        ContractUtility.setup_and_compile_contract(arguments.contract)
 
-def get_message(contract_name: str,
-                address: str,
-                network_name: Optional[str] = "sapphire-localnet"
-                ) -> str:
-    contract_utility = ContractUtility(network_name)
+    elif arguments.command == "deploy":
+        contract_utility = ContractUtility(arguments.network)
+        contract_utility.deploy_contract(arguments.contract)
 
-    abi, bytecode = get_contract(contract_name)
+    elif arguments.command == "setMessage":
+        set_message(arguments.name, arguments.address, arguments.message, arguments.network)
 
-    contract = contract_utility.w3.eth.contract(address=address, abi=abi)
-    # Retrieve message from contract
-    message, author, sender = contract.functions.message().call()
+    elif arguments.command == "message":
+        get_message(arguments.name, arguments.address, arguments.network)
 
-    print(f"Retrieved message: {message}")
-    print(f"Author: {author}")
-    print(f"Sender: {sender}")
-
-    return message
+    else:
+        parser.print_help()
 
 if __name__ == '__main__':
-    contract_utility = ContractUtility('sapphire-testnet')
-    contract_utility.setup_and_compile_contract("MessageBox")
-    #deploy_contract("MessageBox", "sapphire-testnet")
-    #contract_address = contract_utility.deploy_contract("MessageBox")
-    #set_message("MessageBox", contract_address)
-    #get_message("MessageBox", contract_address)
+    main()

@@ -36,11 +36,3 @@ def get_message(contract_name: str,
     print(f"Sender: {sender}")
 
     return message
-
-if __name__ == '__main__':
-    contract_utility = ContractUtility('sapphire-testnet')
-    contract_utility.setup_and_compile_contract("MessageBox")
-    #deploy_contract("MessageBox", "sapphire-testnet")
-    #contract_address = contract_utility.deploy_contract("MessageBox")
-    #set_message("MessageBox", contract_address)
-    #get_message("MessageBox", contract_address)

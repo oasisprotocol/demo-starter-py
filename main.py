@@ -42,24 +42,20 @@ def main():
 
     arguments = parser.parse_args()
 
-
-    if arguments.command == "compile":
-        # Use class method which does not require an instance of ContractUtility.
-        # This is to avoid setting up the Web3 instance which requires the PRIVATE_KEY.
-        ContractUtility.setup_and_compile_contract(arguments.contract)
-
-    elif arguments.command == "deploy":
-        contract_utility = ContractUtility(arguments.network)
-        contract_utility.deploy_contract(arguments.contract)
-
-    elif arguments.command == "setMessage":
-        set_message(arguments.name, arguments.address, arguments.message, arguments.network)
-
-    elif arguments.command == "message":
-        get_message(arguments.name, arguments.address, arguments.network)
-
-    else:
-        parser.print_help()
+    match arguments.command:
+        case "compile":
+            # Use class method which does not require an instance of ContractUtility.
+            # This is to avoid setting up the Web3 instance which requires the PRIVATE_KEY.
+            ContractUtility.setup_and_compile_contract(arguments.contract)
+        case "deploy":
+            contract_utility = ContractUtility(arguments.network)
+            contract_utility.deploy_contract(arguments.contract)
+        case "setMessage":
+            set_message(arguments.name, arguments.address, arguments.message, arguments.network)
+        case "message":
+            get_message(arguments.name, arguments.address, arguments.network)
+        case _:
+            parser.print_help()
 
 if __name__ == '__main__':
     main()

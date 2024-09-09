@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from solcx import compile_standard, install_solc
 from eth_account.signers.local import LocalAccount

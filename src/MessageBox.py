@@ -3,14 +3,13 @@ from src.ContractUtility import ContractUtility
 from src.utils import get_contract
 
 
-def set_message(contract_name: str,
-                address: str,
+def set_message(address: str,
                 message:str,
                 network_name: Optional[str] = "sapphire-localnet"
                 ) -> None:
     contract_utility = ContractUtility(network_name)
 
-    abi, bytecode = get_contract(contract_name)
+    abi, bytecode = get_contract('MessageBox')
 
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
 
@@ -19,20 +18,19 @@ def set_message(contract_name: str,
     tx_receipt = contract_utility.w3.eth.wait_for_transaction_receipt(tx_hash)
     print(f"Message set. Transaction hash: {tx_receipt.transactionHash.hex()}")
 
-def get_message(contract_name: str,
-                address: str,
+def get_message(address: str,
                 network_name: Optional[str] = "sapphire-localnet"
                 ) -> str:
     contract_utility = ContractUtility(network_name)
 
-    abi, bytecode = get_contract(contract_name)
+    abi, bytecode = get_contract('MessageBox')
 
     contract = contract_utility.w3.eth.contract(address=address, abi=abi)
     # Retrieve message from contract
-    message, author, sender = contract.functions.message().call()
+    message = contract.functions.message().call()
+    author = contract.functions.author().call()
 
     print(f"Retrieved message: {message}")
     print(f"Author: {author}")
-    print(f"Sender: {sender}")
 
     return message

@@ -66,8 +66,8 @@ To run: ```python3 main.py```
 
 To compile, deploy and call the interact_with_contract() function from the terminal:
 ```shell
-python main.py compile --contract MessageBox
-python3 python main.py deploy --contract MessageBox --network sapphire-localnet
-python3 main.py set_message --name MessageBox --address <contract_address> --message "Hello world" --network sapphire-localnet
-python3 main.py get_message --name MessageBox --address <contract_address> --network  sapphire-localnet
+python3 main.py compile
+python3 python main.py deploy --network sapphire-localnet
+python3 main.py set_message --address <contract_address> --message "Hello world" --network sapphire-localnet
+python3 main.py get_message --address <contract_address> --network  sapphire-localnet
 ```

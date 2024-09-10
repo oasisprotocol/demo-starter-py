@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from solcx import compile_standard, install_solc
 from eth_account.signers.local import LocalAccount
@@ -46,6 +47,7 @@ class ContractUtility:
             solc_version=SOLIDITY_VERSION,
         )
         output_path = (Path(__file__).parent.parent / "compiled_contracts" / f"{contract_name}_compiled.json").resolve()
+        Path(output_path.parent).mkdir(parents=True, exist_ok=True)
         process_json_file(output_path, mode="w", data=compiled_sol)
         print(f"Compiled contract {contract_name} {output_path}")
         return compiled_sol

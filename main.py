@@ -21,13 +21,12 @@ def main():
 
     # Subparser for deploy
     deploy_parser = subparsers.add_parser('deploy', help="Deploy the smart contract")
-    deploy_parser.add_argument('--contract', help="Name of the contract to deploy", required=True)
+    deploy_parser.add_argument('--contract', help="Name of the contract to deploy", default='MessageBox')
     deploy_parser.add_argument('--network', help="Chain name to connect to "
                                                "(sapphire, sapphire-testnet, sapphire-localnet)", required=True)
 
     # Subparser for set message
     set_message_parser = subparsers.add_parser('setMessage', help="Interact with a deployed contract")
-    set_message_parser.add_argument('--name', help="Contract name to interact with", required=True)
     set_message_parser.add_argument('--address', help="Contract address to call", required=True)
     set_message_parser.add_argument('--message', help="Message to store in the contract", required=True)
     set_message_parser.add_argument('--network', help="Chain name to connect to "
@@ -35,7 +34,6 @@ def main():
 
     # Subparser for get message
     get_message_parser = subparsers.add_parser('message', help="Interact with a deployed contract")
-    get_message_parser.add_argument('--name', help="Contract name to interact with", required=True)
     get_message_parser.add_argument('--address', help="Contract address to call", required=True)
     get_message_parser.add_argument('--network', help="Chain name to connect to "
                                                "(sapphire, sapphire-testnet, sapphire-localnet)", required=True)
@@ -51,9 +49,9 @@ def main():
             contract_utility = ContractUtility(arguments.network)
             contract_utility.deploy_contract(arguments.contract)
         case "setMessage":
-            set_message(arguments.name, arguments.address, arguments.message, arguments.network)
+            set_message(arguments.address, arguments.message, arguments.network)
         case "message":
-            get_message(arguments.name, arguments.address, arguments.network)
+            get_message(arguments.address, arguments.network)
         case _:
             parser.print_help()
 

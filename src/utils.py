@@ -10,7 +10,7 @@ from pathlib import Path
 def setup_web3_middleware(network: str, PRIVATE_KEY: str) -> Web3:
     if not all([PRIVATE_KEY, ]):
         raise Warning(
-            "Missing required environment variables. Please set OASIS_RPC_URL, PRIVATE_KEY.")
+            "Missing required environment variables. Please set PRIVATE_KEY.")
 
     account: LocalAccount = Account.from_key(
         PRIVATE_KEY)

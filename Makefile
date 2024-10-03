@@ -23,6 +23,8 @@ lint:
 # Run all checks (linting, testing)
 check: lint test
 
+format: black .
+
 # Create a distribution package
 dist:
 	$(PYTHON) setup.py sdist bdist_wheel

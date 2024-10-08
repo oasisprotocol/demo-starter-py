@@ -7,15 +7,17 @@ import json
 from pathlib import Path
 
 
-def setup_web3_middleware(network: str, PRIVATE_KEY: str) -> Web3:
-    if not all([PRIVATE_KEY, ]):
-        raise Warning(
-            "Missing required environment variables. Please set PRIVATE_KEY.")
+def setup_web3_middleware(network_name: str, PRIVATE_KEY: str) -> Web3:
+    if not all(
+        [
+            PRIVATE_KEY,
+        ]
+    ):
+        raise Warning("Missing required environment variables. Please set PRIVATE_KEY.")
 
-    account: LocalAccount = Account.from_key(
-        PRIVATE_KEY)
+    account: LocalAccount = Account.from_key(PRIVATE_KEY)
 
-    w3 = Web3(Web3.HTTPProvider(network))
+    w3 = Web3(Web3.HTTPProvider(sapphire.NETWORKS[network_name]))
     w3.middleware_onion.add(construct_sign_and_send_raw_middleware(account))
     w3 = sapphire.wrap(w3)
     # w3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
@@ -32,9 +34,15 @@ def process_json_file(filepath, mode="r", data=None):
 
 
 def get_contract(contract_name: str):
-    output_path = (Path(__file__).parent.parent / "compiled_contracts" / f"{contract_name}_compiled.json").resolve()
+    output_path = (
+        Path(__file__).parent.parent
+        / "compiled_contracts"
+        / f"{contract_name}_compiled.json"
+    ).resolve()
     compiled_contract = process_json_file(output_path)
 
-    contract_data = compiled_contract["contracts"][f"{contract_name}.sol"][contract_name]
+    contract_data = compiled_contract["contracts"][f"{contract_name}.sol"][
+        contract_name
+    ]
     abi, bytecode = contract_data["abi"], contract_data["evm"]["bytecode"]["object"]
     return abi, bytecode

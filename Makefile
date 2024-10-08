@@ -1,6 +1,8 @@
 # Define the Python interpreter
 PYTHON=python3
 
+.PHONY: install test clean lint check format dist run
+
 # Install dependencies
 install:
 	$(PYTHON) -m pip install -r requirements.txt
@@ -21,7 +23,12 @@ lint:
 	flake8 src/
 
 # Run all checks (linting, testing)
-check: lint test
+check: 
+	lint test
+
+# Use black to format code
+format:
+	black .
 
 # Create a distribution package
 dist:

@@ -17,17 +17,13 @@ class ContractUtility:
     """
 
     def __init__(self, network_name: str):
-        PRIVATE_KEY = os.environ.get('PRIVATE_KEY')
-
-        networks = {
-            "sapphire": "https://sapphire.oasis.io",
-            "sapphire-testnet": "https://testnet.sapphire.oasis.io",
-            "sapphire-localnet": "http://localhost:8545",
-        }
-        self.w3 = setup_web3_middleware(networks.get(network_name), PRIVATE_KEY)
+        PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
+        self.w3 = setup_web3_middleware(network_name, PRIVATE_KEY)
 
     @classmethod
-    def setup_and_compile_contract(cls, contract_name: str = "MessageBox", SOLIDITY_VERSION: str = "0.8.0") -> str:
+    def setup_and_compile_contract(
+        cls, contract_name: str = "MessageBox", SOLIDITY_VERSION: str = "0.8.0"
+    ) -> str:
         install_solc(SOLIDITY_VERSION)
         contract_dir = (Path(__file__).parent.parent / "contracts").resolve()
         contract_dir.mkdir(parents=True, exist_ok=True)
@@ -46,7 +42,11 @@ class ContractUtility:
             },
             solc_version=SOLIDITY_VERSION,
         )
-        output_path = (Path(__file__).parent.parent / "compiled_contracts" / f"{contract_name}_compiled.json").resolve()
+        output_path = (
+            Path(__file__).parent.parent
+            / "compiled_contracts"
+            / f"{contract_name}_compiled.json"
+        ).resolve()
         Path(output_path.parent).mkdir(parents=True, exist_ok=True)
         process_json_file(output_path, mode="w", data=compiled_sol)
         print(f"Compiled contract {contract_name} {output_path}")
@@ -55,9 +55,7 @@ class ContractUtility:
     def deploy_contract(self, contract_name: str):
         abi, bytecode = get_contract(contract_name)
         contract = self.w3.eth.contract(abi=abi, bytecode=bytecode)
-        tx_hash = contract.constructor().transact({'gasPrice': self.w3.eth.gas_price})
+        tx_hash = contract.constructor().transact({"gasPrice": self.w3.eth.gas_price})
         tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Contract deployed at {tx_receipt.contractAddress}")
         return tx_receipt.contractAddress
-
-

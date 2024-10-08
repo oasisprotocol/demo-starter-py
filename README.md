@@ -7,7 +7,8 @@ This is a skeleton for confidential Oasis dApps in Python.
 This project was tested on python 3.10, but should work with most python3 versions. 
 Use pyenv to handle multiple python installations.
 
-1. Create the environment using venv (or pipx) ```python3 -m venv my_env``` and install the python sapphire wrapper. 
+1. Initialize an environment using preferred environment manager (venv, pipx...) ```python3 -m venv my_env``` 
+and install the python sapphire wrapper. 
 The library is currently **NOT** included in the PyPI repository so make sure to only install the local .whl version.
 
 2. Make sure to follow the [instructions](https://github.com/oasisprotocol/sapphire-paratime/tree/main/clients/py "Py client wrapper") and build the .whl file correctly. 
@@ -67,7 +68,7 @@ To run: ```python3 main.py```
 To compile, deploy and call the interact_with_contract() function from the terminal:
 ```shell
 python3 main.py compile
-python3 python main.py deploy --network sapphire-localnet
+python3 main.py deploy --network sapphire-localnet
 python3 main.py setMessage --address <contract_address> --message "Hello world" --network sapphire-localnet
 python3 main.py message --address <contract_address> --network  sapphire-localnet
 ```

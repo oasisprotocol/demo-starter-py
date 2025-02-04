@@ -19,7 +19,7 @@ def setup_web3_middleware(network_name: str, PRIVATE_KEY: str) -> Web3:
 
     w3 = Web3(Web3.HTTPProvider(sapphire.NETWORKS[network_name]))
     w3.middleware_onion.add(construct_sign_and_send_raw_middleware(account))
-    w3 = sapphire.wrap(w3)
+    w3 = sapphire.wrap(w3, account)
     # w3.eth.set_gas_price_strategy(rpc_gas_price_strategy)
     w3.eth.default_account = account.address
     return w3

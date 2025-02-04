@@ -6,7 +6,7 @@ if os.environ.get("PRIVATE_KEY") is None:
         "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
     )
 
-from src.MessageBox import set_message, get_message
+from src.MessageBox import set_message, get_message, get_message_signed
 from src.ContractUtility import ContractUtility
 from unittest.mock import MagicMock, patch
 
@@ -81,3 +81,4 @@ def test_sets_message_successfully():
     contract_address = contract_utility.deploy_contract(contract_name)
     set_message(contract_address, contract_message)
     assert get_message(contract_address) == contract_message
+    assert get_message_signed(contract_address) == contract_message

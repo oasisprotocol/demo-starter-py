@@ -34,3 +34,18 @@ def get_message(address: str, network_name: Optional[str] = "sapphire-localnet")
     print(f"Author: {author}")
 
     return message
+
+def get_message_signed(address: str, network_name: Optional[str] = "sapphire-localnet") -> str:
+    contract_utility = ContractUtility(network_name)
+
+    abi, bytecode = get_contract("MessageBox")
+
+    contract = contract_utility.w3.eth.contract(address=address, abi=abi)
+    # Retrieve message from contract
+    message = contract.functions.message_signed().call()
+    author = contract.functions.author().call()
+
+    print(f"Retrieved message: {message}")
+    print(f"Author: {author}")
+
+    return message

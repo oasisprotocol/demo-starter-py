@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from src.ContractUtility import ContractUtility
-from src.MessageBox import set_message, get_message
+from src.MessageBox import set_message, get_message, get_message_signed
 import argparse
 
 
@@ -66,6 +66,20 @@ def main():
         required=True,
     )
 
+    # Subparser for get message signed
+    get_message_signed_parser = subparsers.add_parser(
+        "message_signed", help="Interact with a deployed contract using signed query"
+    )
+    get_message_signed_parser.add_argument(
+        "--address", help="Contract address to call", required=True
+    )
+    get_message_signed_parser.add_argument(
+        "--network",
+        help="Chain name to connect to "
+        "(sapphire, sapphire-testnet, sapphire-localnet)",
+        required=True,
+    )
+
     arguments = parser.parse_args()
 
     match arguments.command:
@@ -80,6 +94,8 @@ def main():
             set_message(arguments.address, arguments.message, arguments.network)
         case "message":
             get_message(arguments.address, arguments.network)
+        case "message_signed":
+            get_message_signed(arguments.address, arguments.network)
         case _:
             parser.print_help()
 

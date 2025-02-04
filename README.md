@@ -12,26 +12,17 @@ Use pyenv to handle multiple python installations.
 
 1. Initialize an environment using preferred environment manager 
 (venv, pipx...) ```python3 -m venv my_env```. 
-There are two ways to install the wrapper client:
-
-    - Build the .whl file from the source code in the 
-    [Py client wrapper](https://github.com/oasisprotocol/sapphire-paratime/tree/main/clients/py "Py client wrapper").
-    - Install from PyPI using ```pip install oasis-sapphire-py```.
-
-2. Install the packages in requirements.txt ```pip install -r requirements.txt```
+2. Install the ```oasis-sapphire-py``` client library and 
+other dependencies from requirements.txt ```pip install -r requirements.txt```.
 
 ## Setup
 
 1. If running sapphire-localnet make sure to launch the 
 [local node](https://github.com/oasisprotocol/oasis-web3-gateway/tree/main/docker).
+
 2. Add your deployer private key to the environment variables 
-```export PRIVATE_KEY=<my_private_key>```.
-
-
-## Testing
-
-Some inital unit tests are located in **./test** folder. 
-Run ```pytest``` in the terminal. 
+```export PRIVATE_KEY=<my_private_key>```. Make sure you have 
+enough funds to cover the gas fees.
 
 ## Running
 
@@ -42,6 +33,17 @@ It also contains the ```main.py``` for command line development.
 Again make sure to follow the setup 
 [instructions](#Setup) before running scripts.
 Open main.py which contains a simple starter example.
+
+### Initialization
+
+The ```ContractUtility``` class is used to compile and deploy the contracts, 
+based on the network name (sapphire, sapphire-testnet, sapphire-localnet).
+The private key used to deploy the contract is fetched from the PRIVATE_KEY 
+environment variable.
+
+```python
+contract_utility = ContractUtility("sapphire-localnet")
+```
 
 ### Compiling the contract
 
@@ -72,10 +74,8 @@ contains some functionality that showcases web3.py
 contract abstraction interaction.
 It contains ```set_message()``` and ```get_message()``` 
 functions that set message and query the contract view function 
-```message()``` respectively. In addition, it contains 
-```get_message_signed()``` function that queries 
-the contract view function ```message_signed()``` 
-using [signed queries](https://docs.oasis.io/build/sapphire/develop/authentication/).
+```message()``` respectively. Message is fetched using the [EIP-712 signed queries](https://docs.oasis.io/build/sapphire/develop/authentication/) which allows for 
+private data retrieval (msg.sender == author access control).
 
 ### Run example
 
@@ -90,5 +90,12 @@ python3 main.py compile
 python3 main.py deploy --network sapphire-localnet
 python3 main.py setMessage --address <contract_address> --message "Hello world" --network sapphire-localnet
 python3 main.py message --address <contract_address> --network  sapphire-localnet
-python3 main.py message_signed --address <contract_address> --network sapphire-localnet
 ```
+
+## Testing
+
+Some inital unit tests are located in **./tests** folder. 
+Run ```pytest``` in the terminal. 
+End-to-end tests are set to ```sapphire-localnet```, 
+check ```tests/test_ContractUtility.py``` if you want to change the network.
+

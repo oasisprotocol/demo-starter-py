@@ -11,10 +11,6 @@ contract MessageBox {
     }
 
     function message() external view returns (string memory) {
-      return _message;
-    }
-
-    function message_signed() external view returns (string memory) {
         if (msg.sender != author) {
             revert("not allowed");
         }

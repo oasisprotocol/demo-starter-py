@@ -1,3 +1,4 @@
 flake8
 py-solc-x
 pytest
+oasis-sapphire-py

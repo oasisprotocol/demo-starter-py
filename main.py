@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from src.ContractUtility import ContractUtility
-from src.MessageBox import set_message, get_message, get_message_signed
+from src.MessageBox import set_message, get_message
 import argparse
 
 
@@ -94,8 +94,6 @@ def main():
             set_message(arguments.address, arguments.message, arguments.network)
         case "message":
             get_message(arguments.address, arguments.network)
-        case "message_signed":
-            get_message_signed(arguments.address, arguments.network)
         case _:
             parser.print_help()
 

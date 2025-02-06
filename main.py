@@ -66,19 +66,6 @@ def main():
         required=True,
     )
 
-    # Subparser for get message signed
-    get_message_signed_parser = subparsers.add_parser(
-        "message_signed", help="Interact with a deployed contract using signed query"
-    )
-    get_message_signed_parser.add_argument(
-        "--address", help="Contract address to call", required=True
-    )
-    get_message_signed_parser.add_argument(
-        "--network",
-        help="Chain name to connect to "
-        "(sapphire, sapphire-testnet, sapphire-localnet)",
-        required=True,
-    )
 
     arguments = parser.parse_args()
 

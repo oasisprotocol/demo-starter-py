@@ -11,10 +11,9 @@ contract MessageBox {
     }
 
     function message() external view returns (string memory) {
-        // TODO: Signed queries not supported yet. https://github.com/oasisprotocol/sapphire-paratime/issues/347
-        // if (msg.sender != author) {
-        // revert("not allowed");
-        // }
+        if (msg.sender != author) {
+            revert("not allowed");
+        }
       return _message;
     }
 }

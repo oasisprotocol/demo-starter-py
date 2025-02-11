@@ -66,6 +66,7 @@ def main():
         required=True,
     )
 
+
     arguments = parser.parse_args()
 
     match arguments.command:

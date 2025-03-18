@@ -1,10 +1,12 @@
 import os
 from pathlib import Path
 from solcx import compile_standard, install_solc
-from eth_account.signers.local import LocalAccount
-from eth_account import Account
 
-from src.utils import setup_web3_middleware, get_contract, process_json_file
+from src.utils import (
+    setup_web3_middleware,
+    get_contract,
+    process_json_file,
+)
 
 
 class ContractUtility:
@@ -24,6 +26,7 @@ class ContractUtility:
     def setup_and_compile_contract(
         cls, contract_name: str = "MessageBox", SOLIDITY_VERSION: str = "0.8.0"
     ) -> str:
+        # This remains synchronous as compilation doesn't need to be async.
         install_solc(SOLIDITY_VERSION)
         contract_dir = (Path(__file__).parent.parent / "contracts").resolve()
         contract_dir.mkdir(parents=True, exist_ok=True)
@@ -33,10 +36,15 @@ class ContractUtility:
         compiled_sol = compile_standard(
             {
                 "language": "Solidity",
-                "sources": {f"{contract_name}.sol": {"content": contract_source_code}},
+                "sources": {f"{contract_name}.sol":
+                            {"content": contract_source_code}},
                 "settings": {
                     "outputSelection": {
-                        "*": {"*": ["abi", "metadata", "evm.bytecode", "evm.sourceMap"]}
+                        "*": {"*": ["abi",
+                                    "metadata",
+                                    "evm.bytecode",
+                                    "evm.sourceMap"
+                                    ]}
                     }
                 },
             },
@@ -52,10 +60,13 @@ class ContractUtility:
         print(f"Compiled contract {contract_name} {output_path}")
         return compiled_sol
 
-    def deploy_contract(self, contract_name: str):
+    async def deploy_contract(self, contract_name: str):
         abi, bytecode = get_contract(contract_name)
         contract = self.w3.eth.contract(abi=abi, bytecode=bytecode)
-        tx_hash = contract.constructor().transact({"gasPrice": self.w3.eth.gas_price})
-        tx_receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+        gas_price = await self.w3.eth.gas_price
+        tx_hash = await contract.constructor().transact({
+            "gasPrice": gas_price
+            })
+        tx_receipt = await self.w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Contract deployed at {tx_receipt.contractAddress}")
         return tx_receipt.contractAddress

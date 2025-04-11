@@ -3,60 +3,44 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     services:
       sapphire-localnet-ci:
-        image: ghcr.io/oasisprotocol/sapphire-localnet:latest
+        image: ghcr.io/oasisprotocol/sapphire-localnet
         ports:
+          - 8544:8544
           - 8545:8545
           - 8546:8546
         env:
-          OASIS_DEPOSIT_BINARY: /oasis-deposit -test-mnemonic -n 5
+          OASIS_DOCKER_START_EXPLORER: no
         options: >-
           --rm
           --health-cmd="test -f /CONTAINER_READY"
           --health-start-period=90s
     steps:
     - name: Check out repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
 
-    - name: Checkout tools repo
-      uses: actions/checkout@v4
-      with:
-        repository: https://github.com/oasisprotocol/sapphire-paratime.git
-        path: /wrapper/
-
-    - name: Build sapphirepy .whl file
-      working-directory: /wrapper/sapphire-paratime/clients/py
+    - name: Install dependencies
       run: |
-        pip3 install --user -r requirements.txt
-        pip3 install --user -r requirements.dev.txt
-        make
-      
-
-    - name: Install sapphirepy .whl file
-      run: |
-        pip3 install --user /wrapper/sapphire-paratime/clients/py/dist/sapphirepy-0.1.0-py3-none-any.whl
-        pip3 install --user -r requirements.txt
+        pip3 install -r requirements.txt
 
     - name: Lint code
       run: |
-        pip install flake8
-        flake scripts/
-        flake main.py
-        flake cli_app.py
+        flake8 src/
+        flake8 main.py
 
     - name: Run tests
       run: |

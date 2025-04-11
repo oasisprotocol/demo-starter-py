@@ -13,16 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     services:
       sapphire-localnet-ci:
-        image: ghcr.io/oasisprotocol/sapphire-localnet:latest
+        image: ghcr.io/oasisprotocol/sapphire-localnet
         ports:
+          - 8544:8544
           - 8545:8545
           - 8546:8546
-        # env:
-        #   OASIS_DEPOSIT_BINARY: /oasis-deposit -test-mnemonic -n 5
-        # options: >-
-        #   --rm
-        #   --health-cmd="test -f /CONTAINER_READY"
-        #   --health-start-period=90s
+        env:
+          OASIS_DOCKER_START_EXPLORER: no
+        options: >-
+          --rm
+          --health-cmd="test -f /CONTAINER_READY"
+          --health-start-period=90s
     steps:
     - name: Check out repository
       uses: actions/checkout@v4
@@ -34,7 +35,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        make
+        pip3 install -r requirements.txt
 
     - name: Lint code
       run: |

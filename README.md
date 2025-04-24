@@ -4,16 +4,16 @@ This is a skeleton for confidential Oasis dApps in Python.
 
 ## Prerequisites
 
-This project was tested on python 3.10, but should work with most 
+This project was tested on python 3.12, but should work with most
 python3 versions. 
 Use pyenv to handle multiple python installations.
 
 ## Installation
 
 1. Initialize an environment using preferred environment manager 
-(venv, pipx...) ```python3 -m venv my_env```. 
-2. Install the ```oasis-sapphire-py``` client library and 
-other dependencies from requirements.txt ```pip install -r requirements.txt```.
+   (venv, pipx...) ```python3 -m venv my_env```.
+2. Install the [`oasis-sapphire-py`](https://pypi.org/project/oasis-sapphire-py/) client library and
+   other dependencies from requirements.txt ```pip install -r requirements.txt```.
 
 ## Setup
 
@@ -36,7 +36,7 @@ Open main.py which contains a simple starter example.
 
 ### Initialization
 
-The ```ContractUtility``` class is used to compile and deploy the contracts, 
+The `ContractUtility` class is used to compile and deploy the contracts, 
 based on the network name (sapphire, sapphire-testnet, sapphire-localnet).
 The private key used to deploy the contract is fetched from the PRIVATE_KEY 
 environment variable.
@@ -62,7 +62,7 @@ ContractUtility.setup_and_compile_contract("MessageBox")
 ### Deploying the contract
 
 ```python
-contract_utility.deploy_contract("MessageBox")
+await contract_utility.deploy_contract("MessageBox)
 ```
 Provide the contract name, in the starter example case 
 we use the provided **MessageBox** without the .sol extension.

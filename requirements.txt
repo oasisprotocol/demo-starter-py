@@ -1,4 +1,6 @@
 flake8
 py-solc-x
 pytest
-oasis-sapphire-py
+pytest-asyncio
+oasis-sapphire-py==0.4.*
+web3==7.*
